@@ -109,7 +109,7 @@
       100% { box-shadow: 0 0 0 0 rgba(79,227,193,0); }
     }
 
-    .brand { margin-bottom: 30px; }
+    .brand { margin-bottom: 22px; }
     .brand-fa {
       font-size: clamp(2.6rem, 9vw, 3.6rem);
       font-weight: 800;
@@ -140,12 +140,21 @@
       padding-right: 0.42em;
     }
 
+    .tagline {
+      font-size: 1.02rem;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.9;
+      margin-bottom: 4px;
+    }
+    .tagline b { color: var(--ink); font-weight: 600; }
+
     .demo {
       background: var(--bg-1);
       border: 1px solid var(--line);
       border-radius: 18px;
       padding: 22px 22px 20px;
-      margin: 34px 0;
+      margin: 30px 0 34px;
       text-align: right;
       position: relative;
       overflow: hidden;
@@ -244,15 +253,6 @@
     .demo-json .n  { color: #ffb86c;         }
     .demo-json .p  { color: var(--ink-faint);}
 
-    .tagline {
-      font-size: 1.02rem;
-      font-weight: 400;
-      color: var(--ink-soft);
-      line-height: 1.9;
-      margin-bottom: 30px;
-    }
-    .tagline b { color: var(--ink); font-weight: 600; }
-
     .features {
       display: flex;
       justify-content: center;
@@ -276,9 +276,13 @@
       color: var(--ink-soft);
       margin-bottom: 14px;
     }
-    .form-row { display: flex; gap: 8px; }
-    .form-row input {
-      flex: 1;
+    .form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .field {
+      width: 100%;
       padding: 14px 18px;
       background: var(--bg-1);
       border: 1.5px solid var(--line);
@@ -290,27 +294,30 @@
       transition: border-color 0.2s, box-shadow 0.2s;
       text-align: right;
     }
-    .form-row input::placeholder { color: var(--ink-faint); }
-    .form-row input:focus {
+    .field::placeholder { color: var(--ink-faint); }
+    .field:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 4px rgba(91,140,255,0.12);
     }
-    .form-row button {
-      padding: 14px 24px;
+    .submit-btn {
+      width: 100%;
+      padding: 15px 24px;
+      margin-top: 2px;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: white;
       border: none;
       border-radius: 14px;
       font-family: 'Vazirmatn', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
       transition: transform 0.12s, box-shadow 0.2s;
       box-shadow: 0 6px 20px -6px var(--glow);
     }
-    .form-row button:hover  { box-shadow: 0 8px 28px -6px var(--glow); }
-    .form-row button:active { transform: scale(0.97); }
+    .submit-btn:hover  { box-shadow: 0 8px 28px -6px var(--glow); }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { cursor: default; }
 
     .form-note {
       font-size: 0.76rem;
@@ -347,8 +354,6 @@
       .card { padding: 38px 24px 32px; border-radius: 22px; }
       .demo { padding: 18px 16px 16px; }
       .demo-said { padding-right: 0; margin-top: 4px; }
-      .form-row { flex-direction: column; }
-      .form-row button { width: 100%; }
     }
   </style>
 </head>
@@ -370,6 +375,11 @@
       <div class="brand-fa">پولاوا<sup>™</sup></div>
       <div class="brand-en">Pulava™</div>
     </div>
+
+    <p class="tagline">
+      نرم‌افزار حسابداری موبایلی <b>صوت‌محور</b> مبتنی بر هوش مصنوعی.<br/>
+      با صدای محاوره‌ای دستور بده — سند، فاکتور و چک را خودکار ثبت کن.
+    </p>
 
     <div class="demo" role="img" aria-label="نمونه تبدیل دستور صوتی به سند حسابداری">
       <div class="demo-voice">
@@ -398,24 +408,19 @@
       </div>
 
       <p class="demo-said">
-        «<b>سه میلیون تومان</b> بابت فاکتور فروش از <b>آقای رضایی</b> دریافت شد»
+        «<b>دو میلیون از حاج‌آقا کریمی</b> بابت پسته گرفتم، یادت نره ها!»
       </p>
 
       <div class="demo-arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        تبدیل به سند حسابداری
+        پولاوا حساب کرد:
       </div>
 
       <pre class="demo-json"><span class="k">"نوع"</span><span class="p">:</span> <span class="s">"دریافت"</span><span class="p">,</span>
-<span class="k">"مبلغ"</span><span class="p">:</span> <span class="n">30000000</span><span class="p">,</span>
-<span class="k">"طرف_حساب"</span><span class="p">:</span> <span class="s">"رضایی"</span><span class="p">,</span>
-<span class="k">"بابت"</span><span class="p">:</span> <span class="s">"فاکتور فروش"</span></pre>
+<span class="k">"مبلغ"</span><span class="p">:</span> <span class="n">20000000</span><span class="p">,</span>
+<span class="k">"طرف_حساب"</span><span class="p">:</span> <span class="s">"حاج‌آقا کریمی"</span><span class="p">,</span>
+<span class="k">"بابت"</span><span class="p">:</span> <span class="s">"خرید پسته"</span></pre>
     </div>
-
-    <p class="tagline">
-      نرم‌افزار حسابداری موبایلی <b>صوت‌محور</b> مبتنی بر هوش مصنوعی.<br/>
-      با صدای محاوره‌ای دستور بده — سند، فاکتور و چک را خودکار ثبت کن.
-    </p>
 
     <div class="features">
       <span class="feat">ثبت سند</span>
@@ -424,12 +429,13 @@
       <span class="feat">گزارش‌گیری صوتی</span>
     </div>
 
-    <label class="form-label" for="email-input">
-      برای اطلاع از زمان راه‌اندازی، ایمیل خود را وارد کنید
+    <label class="form-label" for="phone-input">
+      شماره موبایل خود را وارد کنید تا زمان راه‌اندازی خبرتان کنیم
     </label>
-    <div class="form-row">
-      <input type="email" id="email-input" placeholder="example@email.com" autocomplete="email" aria-label="آدرس ایمیل" />
-      <button type="button" onclick="handleSubmit()">مرا باخبر کن</button>
+    <div class="form-fields">
+      <input class="field" type="tel" id="phone-input" placeholder="۰۹۱۲۳۴۵۶۷۸۹" inputmode="numeric" autocomplete="tel" aria-label="شماره موبایل" />
+      <input class="field" type="email" id="email-input" placeholder="ایمیل (اختیاری)" autocomplete="email" aria-label="آدرس ایمیل (اختیاری)" />
+      <button class="submit-btn" type="button" onclick="handleSubmit()">مرا باخبر کن</button>
     </div>
     <p class="form-note">اطلاعات شما نزد ما محفوظ می‌ماند.</p>
 
@@ -448,20 +454,36 @@
   <script>
     const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwx6gDNx_IMScqHrCmO-m5kmSOjKKiAVbaG9IQEOiWKBItTNEiskCOfMdnz8_QmcANl/exec';
 
+    // تبدیل ارقام فارسی/عربی به انگلیسی
+    function toEnglishDigits(str) {
+      return str
+        .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+        .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    }
+
+    function flashError(el) {
+      el.style.borderColor = '#ef4444';
+      el.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.12)';
+      el.focus();
+      setTimeout(() => { el.style.borderColor = ''; el.style.boxShadow = ''; }, 1600);
+    }
+
     function handleSubmit() {
-      const input = document.getElementById('email-input');
-      const email = input.value.trim();
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const phoneInput = document.getElementById('phone-input');
+      const emailInput = document.getElementById('email-input');
 
-      if (!ok) {
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.12)';
-        input.focus();
-        setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 1600);
-        return;
-      }
+      const phone = toEnglishDigits(phoneInput.value.trim()).replace(/[\s-]/g, '');
+      const email = emailInput.value.trim();
 
-      const btn = document.querySelector('.form-row button');
+      const phoneOk = /^09\d{9}$/.test(phone);
+      const emailOk = email === '' || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      // شماره موبایل الزامی است
+      if (!phoneOk) { flashError(phoneInput); return; }
+      // اگر ایمیل وارد شده، باید معتبر باشد
+      if (!emailOk) { flashError(emailInput); return; }
+
+      const btn = document.querySelector('.submit-btn');
       const orig = btn.textContent;
       btn.textContent = '...';
       btn.disabled = true;
@@ -469,10 +491,11 @@
       fetch(SIGNUP_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ email: email })
+        body: JSON.stringify({ phone: phone, email: email })
       })
       .then(() => {
-        input.value = '';
+        phoneInput.value = '';
+        emailInput.value = '';
         btn.textContent = '✓ ثبت شد';
         btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
         setTimeout(() => {
@@ -484,12 +507,12 @@
       .catch(() => {
         btn.textContent = orig;
         btn.disabled = false;
-        input.style.borderColor = '#ef4444';
-        input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.12)';
-        setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 1600);
+        flashError(phoneInput);
       });
     }
 
+    document.getElementById('phone-input')
+      .addEventListener('keydown', e => { if (e.key === 'Enter') handleSubmit(); });
     document.getElementById('email-input')
       .addEventListener('keydown', e => { if (e.key === 'Enter') handleSubmit(); });
   </script>
