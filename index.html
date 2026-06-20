@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>پولاوا | Pulava™ — حسابداری صوتی با هوش مصنوعی</title>
+  <meta name="description" content="پولاوا — نرم‌افزار حسابداری موبایلی صوت‌محور مبتنی بر هوش مصنوعی. دستور بده، سند بگیر." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-0:      #07090f;
+      --bg-1:      #0c1019;
+      --surface:   #11161f;
+      --line:      #1e2530;
+      --ink:       #f2f5fa;
+      --ink-soft:  #8b94a8;
+      --ink-faint: #545d70;
+      --accent:    #5b8cff;
+      --accent-2:  #9d7bff;
+      --accent-3:  #4fe3c1;
+      --glow:      rgba(91,140,255,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg-0);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+      padding: 40px 20px;
+    }
+
+    .aura {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .aura-1 { width: 500px; height: 500px; background: var(--accent);   top: -180px; right: -120px; }
+    .aura-2 { width: 460px; height: 460px; background: var(--accent-2); bottom: -200px; left: -140px; opacity: 0.35; }
+    .aura-3 { width: 320px; height: 320px; background: var(--accent-3); bottom: 10%; right: 8%; opacity: 0.12; }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 75%);
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      width: min(600px, 100%);
+      background: linear-gradient(180deg, rgba(22,28,40,0.85) 0%, rgba(14,18,27,0.85) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 52px 52px 44px;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 30px 80px -20px rgba(0,0,0,0.7),
+        0 0 120px -40px var(--glow);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(91,140,255,0.08);
+      border: 1px solid rgba(91,140,255,0.2);
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent);
+      margin-bottom: 38px;
+    }
+    .status .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent-3);
+      box-shadow: 0 0 0 0 rgba(79,227,193,0.6);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(79,227,193,0.5); }
+      70%  { box-shadow: 0 0 0 7px rgba(79,227,193,0); }
+      100% { box-shadow: 0 0 0 0 rgba(79,227,193,0); }
+    }
+
+    .brand { margin-bottom: 30px; }
+    .brand-fa {
+      font-size: clamp(2.6rem, 9vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      background: linear-gradient(135deg, #ffffff 30%, #b8c5e8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    .brand-fa sup {
+      font-size: 0.9rem;
+      font-weight: 500;
+      -webkit-text-fill-color: var(--ink-soft);
+      vertical-align: super;
+      margin-right: 2px;
+    }
+    .brand-en {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink-faint);
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      margin-top: 12px;
+      padding-right: 0.42em;
+    }
+
+    .demo {
+      background: var(--bg-1);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px 22px 20px;
+      margin: 34px 0;
+      text-align: right;
+      position: relative;
+      overflow: hidden;
+    }
+    .demo::before {
+      content: "";
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent-3), transparent);
+      opacity: 0.6;
+    }
+
+    .demo-voice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .mic {
+      width: 36px; height: 36px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px -4px var(--glow);
+    }
+    .mic svg {
+      width: 18px; height: 18px;
+      fill: none; stroke: white;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .demo-bars {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 30px;
+      flex: 1;
+    }
+    .demo-bars span {
+      display: block;
+      width: 3px;
+      border-radius: 2px;
+      background: var(--accent);
+      opacity: 0.55;
+      animation: bar 1.4s ease-in-out infinite;
+    }
+    @keyframes bar {
+      0%, 100% { transform: scaleY(0.4); opacity: 0.35; }
+      50%      { transform: scaleY(1);   opacity: 0.9;  }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .demo-bars span { animation: none; }
+    }
+
+    .demo-said {
+      font-size: 0.92rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      padding-right: 48px;
+    }
+    .demo-said b { color: var(--ink); font-weight: 600; }
+
+    .demo-arrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: var(--ink-faint);
+      margin-bottom: 14px;
+      padding-right: 4px;
+    }
+    .demo-arrow svg {
+      width: 14px; height: 14px;
+      stroke: var(--accent-3); fill: none; stroke-width: 2;
+    }
+
+    .demo-json {
+      font-family: 'Space Grotesk', monospace;
+      direction: ltr;
+      text-align: left;
+      font-size: 0.78rem;
+      line-height: 1.85;
+      background: #090c12;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--ink-soft);
+      overflow-x: auto;
+    }
+    .demo-json .k  { color: var(--accent);   }
+    .demo-json .s  { color: var(--accent-3); }
+    .demo-json .n  { color: #ffb86c;         }
+    .demo-json .p  { color: var(--ink-faint);}
+
+    .tagline {
+      font-size: 1.02rem;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.9;
+      margin-bottom: 30px;
+    }
+    .tagline b { color: var(--ink); font-weight: 600; }
+
+    .features {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 38px;
+    }
+    .feat {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--line);
+      padding: 7px 14px;
+      border-radius: 100px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+      margin-bottom: 14px;
+    }
+    .form-row { display: flex; gap: 8px; }
+    .form-row input {
+      flex: 1;
+      padding: 14px 18px;
+      background: var(--bg-1);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 0.95rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      text-align: right;
+    }
+    .form-row input::placeholder { color: var(--ink-faint); }
+    .form-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(91,140,255,0.12);
+    }
+    .form-row button {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.12s, box-shadow 0.2s;
+      box-shadow: 0 6px 20px -6px var(--glow);
+    }
+    .form-row button:hover  { box-shadow: 0 8px 28px -6px var(--glow); }
+    .form-row button:active { transform: scale(0.97); }
+
+    .form-note {
+      font-size: 0.76rem;
+      color: var(--ink-faint);
+      margin-top: 12px;
+    }
+
+    .contact {
+      margin-top: 30px;
+      padding-top: 26px;
+      border-top: 1px solid var(--line);
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+    .contact a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .contact a:hover { text-decoration: underline; }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 28px;
+      text-align: center;
+      line-height: 1.9;
+    }
+    footer .f1 { font-size: 0.82rem; color: var(--ink-soft); font-weight: 500; }
+    footer .f1 b { color: var(--ink); font-weight: 600; }
+    footer .f2 { font-size: 0.74rem; color: var(--ink-faint); }
+
+    @media (max-width: 480px) {
+      .card { padding: 38px 24px 32px; border-radius: 22px; }
+      .demo { padding: 18px 16px 16px; }
+      .demo-said { padding-right: 0; margin-top: 4px; }
+      .form-row { flex-direction: column; }
+      .form-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="aura aura-1" aria-hidden="true"></div>
+  <div class="aura aura-2" aria-hidden="true"></div>
+  <div class="aura aura-3" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <main class="card" role="main">
+
+    <div class="status">
+      <span class="dot" aria-hidden="true"></span>
+      به‌زودی در دسترس
+    </div>
+
+    <div class="brand">
+      <div class="brand-fa">پولاوا<sup>™</sup></div>
+      <div class="brand-en">Pulava™</div>
+    </div>
+
+    <div class="demo" role="img" aria-label="نمونه تبدیل دستور صوتی به سند حسابداری">
+      <div class="demo-voice">
+        <div class="mic" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <rect x="9" y="2" width="6" height="11" rx="3"/>
+            <path d="M5 10a7 7 0 0 0 14 0"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+            <line x1="8" y1="22" x2="16" y2="22"/>
+          </svg>
+        </div>
+        <div class="demo-bars" aria-hidden="true">
+          <span style="height:60%;animation-delay:0s"></span>
+          <span style="height:90%;animation-delay:.1s"></span>
+          <span style="height:40%;animation-delay:.2s"></span>
+          <span style="height:100%;animation-delay:.15s"></span>
+          <span style="height:70%;animation-delay:.05s"></span>
+          <span style="height:50%;animation-delay:.25s"></span>
+          <span style="height:85%;animation-delay:.1s"></span>
+          <span style="height:45%;animation-delay:.3s"></span>
+          <span style="height:95%;animation-delay:.2s"></span>
+          <span style="height:55%;animation-delay:.12s"></span>
+          <span style="height:75%;animation-delay:.08s"></span>
+          <span style="height:35%;animation-delay:.28s"></span>
+        </div>
+      </div>
+
+      <p class="demo-said">
+        «<b>سه میلیون تومان</b> بابت فاکتور فروش از <b>آقای رضایی</b> دریافت شد»
+      </p>
+
+      <div class="demo-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        تبدیل به سند حسابداری
+      </div>
+
+      <pre class="demo-json"><span class="k">"نوع"</span><span class="p">:</span> <span class="s">"دریافت"</span><span class="p">,</span>
+<span class="k">"مبلغ"</span><span class="p">:</span> <span class="n">30000000</span><span class="p">,</span>
+<span class="k">"طرف_حساب"</span><span class="p">:</span> <span class="s">"رضایی"</span><span class="p">,</span>
+<span class="k">"بابت"</span><span class="p">:</span> <span class="s">"فاکتور فروش"</span></pre>
+    </div>
+
+    <p class="tagline">
+      نرم‌افزار حسابداری موبایلی <b>صوت‌محور</b> مبتنی بر هوش مصنوعی.<br/>
+      با صدای محاوره‌ای دستور بده — سند، فاکتور و چک را خودکار ثبت کن.
+    </p>
+
+    <div class="features">
+      <span class="feat">ثبت سند</span>
+      <span class="feat">فاکتور</span>
+      <span class="feat">چک دریافتی و پرداختی</span>
+      <span class="feat">گزارش‌گیری صوتی</span>
+    </div>
+
+    <label class="form-label" for="email-input">
+      برای اطلاع از زمان راه‌اندازی، ایمیل خود را وارد کنید
+    </label>
+    <div class="form-row">
+      <input type="email" id="email-input" placeholder="example@email.com" autocomplete="email" aria-label="آدرس ایمیل" />
+      <button type="button" onclick="handleSubmit()">مرا باخبر کن</button>
+    </div>
+    <p class="form-note">اطلاعات شما نزد ما محفوظ می‌ماند.</p>
+
+    <div class="contact">
+      ارتباط با ما:
+      <a href="mailto:info@pulava.com">info@pulava.com</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p class="f1">محصولی از شرکت <b>رایان نوا پاژ</b></p>
+    <p class="f2">© ۱۴۰۴ — تمامی حقوق محفوظ است</p>
+  </footer>
+
+  <script>
+    function handleSubmit() {
+      const input = document.getElementById('email-input');
+      const email = input.value.trim();
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if (!ok) {
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.12)';
+        input.focus();
+        setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 1600);
+        return;
+      }
+
+      input.value = '';
+      const btn = document.querySelector('.form-row button');
+      const orig = btn.textContent;
+      btn.textContent = '✓ ثبت شد';
+      btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = orig;
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 3000);
+    }
+
+    document.getElementById('email-input')
+      .addEventListener('keydown', e => { if (e.key === 'Enter') handleSubmit(); });
+  </script>
+
+</body>
+</html>
