@@ -446,6 +446,8 @@
   </footer>
 
   <script>
+    const SIGNUP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwx6gDNx_IMScqHrCmO-m5kmSOjKKiAVbaG9IQEOiWKBItTNEiskCOfMdnz8_QmcANl/exec';
+
     function handleSubmit() {
       const input = document.getElementById('email-input');
       const email = input.value.trim();
@@ -459,17 +461,33 @@
         return;
       }
 
-      input.value = '';
       const btn = document.querySelector('.form-row button');
       const orig = btn.textContent;
-      btn.textContent = '✓ ثبت شد';
-      btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+      btn.textContent = '...';
       btn.disabled = true;
-      setTimeout(() => {
+
+      fetch(SIGNUP_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ email: email })
+      })
+      .then(() => {
+        input.value = '';
+        btn.textContent = '✓ ثبت شد';
+        btn.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.background = '';
+          btn.disabled = false;
+        }, 3000);
+      })
+      .catch(() => {
         btn.textContent = orig;
-        btn.style.background = '';
         btn.disabled = false;
-      }, 3000);
+        input.style.borderColor = '#ef4444';
+        input.style.boxShadow = '0 0 0 4px rgba(239,68,68,0.12)';
+        setTimeout(() => { input.style.borderColor = ''; input.style.boxShadow = ''; }, 1600);
+      });
     }
 
     document.getElementById('email-input')
